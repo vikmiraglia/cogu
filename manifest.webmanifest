@@ -1,0 +1,16 @@
+{
+  "name": "Cogu — Jogo de Cartas",
+  "short_name": "Cogu",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101010",
+  "theme_color": "#121212",
+  "icons": [
+    {
+      "src": "assets/cards/61.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

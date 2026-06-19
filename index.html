@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#121212" />
+  <title>Cogu — Jogo de Cartas</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <main class="app">
+    <section id="setupScreen" class="screen active">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Cogu</p>
+          <h1>Jogo de Cartas</h1>
+          <p class="hero-text">
+            Uma versão web do seu jogo de cartas, pronta para rodadas rápidas no celular ou no navegador.
+            Cadastre os jogadores, embaralhe o baralho e comece a partida.
+          </p>
+
+          <div class="hero-badges">
+            <span>2 a 8 jogadores</span>
+            <span>Risco progressivo</span>
+            <span>Instalável</span>
+          </div>
+        </div>
+
+        <div class="hero-card-wrap">
+          <div class="hero-card-shadow"></div>
+          <img src="assets/cards/61.png" alt="Verso da carta Cogu" class="hero-card" />
+        </div>
+      </header>
+
+      <section class="setup-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Jogadores</h2>
+            <span id="playerCountBadge">2 / 8</span>
+          </div>
+
+          <div id="playersList" class="players-list"></div>
+
+          <div class="setup-actions">
+            <button id="addPlayerBtn" class="secondary" type="button">+ Adicionar jogador</button>
+            <button id="startBtn" class="primary" type="button">Começar jogo</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Preferências</h2>
+          </div>
+
+          <div class="setting-list">
+            <label class="setting-item">
+              <div>
+                <strong>Som</strong>
+                <span>Efeito ao puxar carta e ao perder</span>
+              </div>
+              <input id="soundToggle" type="checkbox" checked />
+            </label>
+
+            <label class="setting-item">
+              <div>
+                <strong>Confirmar antes de puxar</strong>
+                <span>Evita tocar sem querer em “Pegar carta”</span>
+              </div>
+              <input id="confirmToggle" type="checkbox" />
+            </label>
+          </div>
+
+          <div class="rules-box">
+            <h3>Regra de eliminação</h3>
+            <p>Nas 10 primeiras cartas, a chance de perder é de <strong>1%</strong>. Depois, ela sobe progressivamente até <strong>5%</strong> na última carta.</p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <header class="game-header">
+        <div class="header-left">
+          <button id="backToSetupBtn" class="ghost" type="button">← Jogadores</button>
+        </div>
+
+        <div class="turn-center">
+          <span>Turno de</span>
+          <strong id="currentPlayerName">Jogador</strong>
+        </div>
+
+        <div class="header-right">
+          <button id="rulesBtn" class="ghost" type="button">Regras</button>
+          <button id="historyBtn" class="ghost" type="button">Histórico</button>
+          <button id="fullscreenBtn" class="ghost" type="button">Tela cheia</button>
+          <button id="installBtn" class="ghost hidden" type="button">Instalar</button>
+          <button id="resetBtn" class="ghost danger" type="button">Reiniciar</button>
+        </div>
+      </header>
+
+      <section class="dashboard">
+        <div class="stat-card">
+          <span>Usadas</span>
+          <strong id="deckCounter">0 / 60</strong>
+        </div>
+        <div class="stat-card">
+          <span>Restantes</span>
+          <strong id="remainingCounter">60</strong>
+        </div>
+        <div class="stat-card">
+          <span>Chance atual</span>
+          <strong id="riskCounter">1%</strong>
+        </div>
+        <div class="stat-card">
+          <span>Rodada</span>
+          <strong id="roundCounter">1</strong>
+        </div>
+      </section>
+
+      <div class="progress-wrap">
+        <div class="progress-bar">
+          <div id="progressFill"></div>
+        </div>
+      </div>
+
+      <section class="table-area">
+        <div class="table-card-panel">
+          <div id="flipCard" class="flip-card">
+            <div class="flip-inner">
+              <div class="flip-face flip-back">
+                <img src="assets/cards/61.png" alt="Verso da carta" />
+              </div>
+              <div class="flip-face flip-front">
+                <img id="cardImage" src="assets/cards/61.png" alt="Carta do jogo" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-action-panel">
+          <div class="callout">
+            <p class="callout-label">Ação</p>
+            <p id="instructionText" class="instruction-text">Toque no botão para puxar a próxima carta.</p>
+          </div>
+
+          <div class="cta-stack">
+            <button id="drawBtn" class="primary big" type="button">Pegar carta</button>
+            <button id="nextTurnBtn" class="secondary big hidden" type="button">Próximo jogador</button>
+          </div>
+
+          <div class="notice">
+            <span id="statusMessage">O jogador da vez deve puxar a carta e ler em voz alta.</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="bottom-bar">
+        <div id="playersStrip" class="players-strip"></div>
+      </aside>
+    </section>
+
+    <section id="loseScreen" class="screen lose-screen">
+      <div class="lose-card">
+        <p class="eyebrow">Fim de jogo</p>
+        <h1>Você perdeu!<br>Vire o Copo</h1>
+        <p id="loserText" class="lose-text"></p>
+        <div class="lose-actions">
+          <button id="restartAfterLossBtn" class="primary big" type="button">Reiniciar jogo</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="rulesDialog" class="modal">
+    <div class="modal-head">
+      <h2>Regras</h2>
+      <button class="close-modal" data-close="rulesDialog" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>1.</strong> O jogador da vez puxa uma carta.</p>
+      <p><strong>2.</strong> Se não perder, ele lê a carta para o grupo e faz o que a carta manda.</p>
+      <p><strong>3.</strong> Em seguida, toque em <strong>Próximo jogador</strong>.</p>
+      <p><strong>4.</strong> Se o risco falhar, aparece a mensagem: <strong>“Você perdeu! Vire o Copo”</strong>.</p>
+      <p><strong>5.</strong> Depois da derrota, o jogo reinicia com os mesmos jogadores.</p>
+      <hr>
+      <p><strong>Risco:</strong> 1% nas 10 primeiras cartas. Depois aumenta progressivamente até 5% na carta 60.</p>
+      <p class="responsible">Beba com responsabilidade.</p>
+    </div>
+  </dialog>
+
+  <dialog id="historyDialog" class="modal">
+    <div class="modal-head">
+      <h2>Histórico</h2>
+      <button class="close-modal" data-close="historyDialog" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="historyList" class="history-list empty">Nenhuma carta foi puxada ainda.</div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
